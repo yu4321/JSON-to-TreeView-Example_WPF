@@ -161,12 +161,11 @@ namespace JSONVisualizer.ViewModel
 
         private TreeData MakeTreeDataChildren(object td, string keyname)
         {
-            //System.Console.WriteLine("invoked with " + td.GetType());
             TreeData result = new TreeData();
             result.Name = keyname;
             if (td is JProperty)
             {
-                //System.Console.WriteLine("invoked with JProperty...");
+
                 JProperty jp = (JProperty)td;
                 result.Name = jp.Name;
                 result.Children = MakeTreeDataChildren(jp).Children;
@@ -175,20 +174,12 @@ namespace JSONVisualizer.ViewModel
             else if (td is JValue)
             {
                 JValue jv = (JValue)td;
-                //System.Console.WriteLine("JValue Type: "+jv.Value.GetType());
-                //System.Console.WriteLine("JValue Value: " + jv.Value);
-                /*System.Console.WriteLine("invoked with JValue...");
-                System.Console.WriteLine("to - "+jv.ToString()+" vato"+ jv.Value.ToString());
-                System.Console.WriteLine("type" + jv.Type.ToString());
-                System.Console.WriteLine("parent type " + jv.Parent);*/
-                //result.Name = jv.ToString();
 
                 if (jv.Value != null)
                     result.Value = jv.Value.ToString();
                 else
                 {
                     result.Value = "null";
-                    //result.Value = null;
                 }
                 
                 return result;
@@ -199,20 +190,19 @@ namespace JSONVisualizer.ViewModel
                 JObject jo = (JObject)td;
                 foreach (var x in jo)
                 {
-                    //System.Console.WriteLine("invoked with JObject....");
                     result.Children.Add(MakeTreeDataChildren(x.Value, x.Key));
-                    //result.Name = x.Key;
                 }
                 return result;
             }
             else if (td is JArray)
             {
                 JArray ja = (JArray)td;
+                int i = 0;
                 foreach (var x in ja)
                 {
-                    //System.Console.WriteLine("invoked with JArray.....");
-                    //result.Name=x.
-                    result.Children.Add(MakeTreeDataChildren(x));
+
+                    result.Children.Add(MakeTreeDataChildren(x, i));
+                    i++;
                 }
                 return result;
             }
@@ -220,31 +210,62 @@ namespace JSONVisualizer.ViewModel
             {
                 System.Console.WriteLine("Error Type: " + td.GetType());
             }
-            //ObservableCollection<TreeData> sampleChild = new ObservableCollection<TreeData>();
-            /*foreach (var x in td)
+            
+            return null;
+        }
+
+        private TreeData MakeTreeDataChildren(object td, int index)
+        {
+            TreeData result = new TreeData();
+            result.Name = "Element "+index;
+            if (td is JProperty)
             {
-                if (x.Value != null)
+
+                JProperty jp = (JProperty)td;
+                result.Name = jp.Name;
+                result.Children = MakeTreeDataChildren(jp).Children;
+                return result;
+            }
+            else if (td is JValue)
+            {
+                JValue jv = (JValue)td;
+
+                if (jv.Value != null)
+                    result.Value = jv.Value.ToString();
+                else
                 {
-                    try
-                    {
-                        foreach (JObject y in x.Value.Children())
-                        {
-                            if(y.Count>1)
-                            MakeTreeDataChildren(y);
-                            else
-                            {
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        foreach (JProperty y in x.Value.Children())
-                        {
-                            System.Console.WriteLine("PPRINT: " + y.ToString());
-                        }
-                    }
+                    result.Value = "null";
                 }
-            }*/
+
+                return result;
+
+            }
+            else if (td is JObject)
+            {
+                JObject jo = (JObject)td;
+                foreach (var x in jo)
+                {
+                    result.Children.Add(MakeTreeDataChildren(x.Value, x.Key));
+                }
+                return result;
+            }
+            else if (td is JArray)
+            {
+                JArray ja = (JArray)td;
+                int i = 0;
+                foreach (var x in ja)
+                {
+
+                    result.Children.Add(MakeTreeDataChildren(x,i));
+                    i++;
+                }
+                return result;
+            }
+            else
+            {
+                System.Console.WriteLine("Error Type: " + td.GetType());
+            }
+
             return null;
         }
 
@@ -263,14 +284,13 @@ namespace JSONVisualizer.ViewModel
             else if (td is JValue)
             {
                 JValue jv = (JValue)td;
-                //System.Console.WriteLine("JValue Type: "+jv.Value.GetType());
-                //System.Console.WriteLine("JValue Value: " + jv.Value);
-                /* System.Console.WriteLine("invoked with JValue...");
-                 System.Console.WriteLine("to - " + jv.ToString() + " vato" + jv.Value.ToString());
-                 System.Console.WriteLine("type" + jv.Type.ToString());
-                 System.Console.WriteLine("parent type " + jv.Parent);*/
-                //result.Name = jv.ToString();
-                result.Value = jv.Value.ToString();
+               
+                if (jv.Value != null)
+                    result.Value = jv.Value.ToString();
+                else
+                {
+                    result.Value = "null";
+                }
                 return result;
             }
             else if (td is JObject)
@@ -278,20 +298,19 @@ namespace JSONVisualizer.ViewModel
                 JObject jo = (JObject)td;
                 foreach (var x in jo)
                 {
-                    // System.Console.WriteLine("invoked with JObject....");
                     result.Children.Add(MakeTreeDataChildren(x.Value, x.Key));
-                    //result.Name = x.Key;
                 }
                 return result;
             }
             else if (td is JArray)
             {
                 JArray ja = (JArray)td;
+                int i = 0;
                 foreach (var x in ja)
                 {
-                    //System.Console.WriteLine("invoked with JArray.....");
-                    //result.Name=x.
-                    result.Children.Add(MakeTreeDataChildren(x));
+
+                    result.Children.Add(MakeTreeDataChildren(x, i));
+                    i++;
                 }
                 return result;
             }
@@ -299,64 +318,10 @@ namespace JSONVisualizer.ViewModel
             {
                 System.Console.WriteLine("Error Type: " + td.GetType());
             }
-            //ObservableCollection<TreeData> sampleChild = new ObservableCollection<TreeData>();
-            /*foreach (var x in td)
-            {
-                if (x.Value != null)
-                {
-                    try
-                    {
-                        foreach (JObject y in x.Value.Children())
-                        {
-                            if(y.Count>1)
-                            MakeTreeDataChildren(y);
-                            else
-                            {
-                            }
-                        }
-                    }
-                    catch
-                    {
-                        foreach (JProperty y in x.Value.Children())
-                        {
-                            System.Console.WriteLine("PPRINT: " + y.ToString());
-                        }
-                    }
-                }
-            }*/
+           
             return null;
         }
 
-        private void RecursiveTreeViewAdd(JObject td)
-        {
-            int i = 0;
-            System.Console.WriteLine("RPrint: ");
-            foreach (var z in td) System.Console.WriteLine(z.Value.ToString() + " Now Count: ");
-            foreach (var x in td)
-            {
-                if (x.Value != null)
-                {
-                    try
-                    {
-                        foreach (JObject y in x.Value.Children())
-                        {
-                            RecursiveTreeViewPrint(y);
-                        }
-                    }
-                    catch
-                    {
-                        int i2 = -1;
-                        foreach (JProperty y in x.Value.Children())
-                        {
-                            i2++;
-                            System.Console.WriteLine("PPRINT: " + y.ToString());
-                        }
-                        return;
-                    }
-                }
-                i++;
-            }
-        }
 
         private void RecursiveTreeViewPrint(JObject td)
         {
@@ -407,72 +372,11 @@ namespace JSONVisualizer.ViewModel
             }
         }
 
-        private void RecursiveTreeViewPrint2(object td)
-        {
-            //System.Console.WriteLine("AllPrint: " + td.ToString() + "Allprint>");
-            //System.Console.WriteLine("RPrint: ");
-            TreeData result = new TreeData();
-            if (td is JProperty)
-            {
-                //result.Children.Add(new Tr)
-            }
-            else if (td is JValue)
-            {
-            }
-            else if (td is JObject)
-            {
-            }
-        }
-
         private void ExecuteViewCommand()
         {
         }
 
-        /*public void intializeContents()
-        {
-            System.Console.WriteLine("start");
-            Contents.Clear();
-            using (FileStream fs = new FileStream("element.JSON", FileMode.OpenOrCreate))
-            {
-                StreamReader sr = new StreamReader(fs, Encoding.UTF8);
-                int index = -1;
-                while (!sr.EndOfStream)
-                {
-                    index++;
-                    string s = sr.ReadLine();
-                    string[] temp = s.Split(',');
-                    try
-                    {
-                        ElementModel tmp = new ElementModel();
-                        tmp.comment = temp[2];
-                        tmp.sub = temp[1];
-                        tmp.main = temp[0];
-                        Contents.Add(tmp);
-                        System.Console.WriteLine("작성 " + Contents[index].main);
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-            }
-        }
-        private object ReceiveMessage(PageChangeMessage action)
-        {
-            switch (action.PageName)
-            {
-                case PageName.Add:
-                    CurrentViewModel = ServiceLocator.Current.GetInstance<ContentAddViewModel>();
-                    break;
-
-                case PageName.View:
-                    CurrentViewModel = ServiceLocator.Current.GetInstance<ContentViewViewModel>();
-                    break;
-            }
-            return null;
-        }
-        */
-
+       
         private void ExecuteAddCommand()
         {
             Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.Add, Contents));
