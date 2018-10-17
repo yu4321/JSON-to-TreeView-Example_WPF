@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="JSONVisualizer.Views.ContentView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ignore="http://www.galasoft.ch/ignore"
+        mc:Ignorable="d ignore"
+        Height="350" Width="525">
+
+    <Grid Background="White">
+        <Button x:Name="Back" Content="Back" HorizontalAlignment="Left" Margin="310,276,0,0" VerticalAlignment="Top" Width="76" Height="33" Command="{Binding BackCommand}" />
+        <Button x:Name="Modify" Content="Modify" HorizontalAlignment="Left" Margin="404,276,0,0" VerticalAlignment="Top" Width="76" Height="33" Command="{Binding ModifyCommand}" />
+        <Label x:Name="Title01" Content="Main:" HorizontalAlignment="Left" Height="36" Margin="62,76,0,0" VerticalAlignment="Top" Width="78" />
+        <Label x:Name="Title02" Content="Sub:" HorizontalAlignment="Left" Height="36" Margin="73,130,0,0" VerticalAlignment="Top" Width="78" />
+        <Label x:Name="Title03" Content="Comment:" HorizontalAlignment="Left" Height="36" Margin="88,184,0,0" VerticalAlignment="Top" Width="78" />
+        <Label x:Name="Content01" Content="{Binding Data.main }" HorizontalAlignment="Left" Height="32" Margin="292,76,0,0" VerticalAlignment="Top" Width="72" />
+        <Label x:Name="Content02" Content="{Binding Data.sub }" HorizontalAlignment="Left" Height="32" Margin="309,134,0,0" VerticalAlignment="Top" Width="72" />
+        <Label x:Name="Content03" Content="{Binding Data.comment }" HorizontalAlignment="Left" Height="36" Margin="336,184,0,0" VerticalAlignment="Top" Width="78" />
+    </Grid>
+</UserControl>

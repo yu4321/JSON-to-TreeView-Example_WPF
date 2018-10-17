@@ -1,0 +1,29 @@
+﻿<Application x:Class="JSONVisualizer.App"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:vm="clr-namespace:JSONVisualizer.ViewModel"
+			 xmlns:view="clr-namespace:JSONVisualizer.Views"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ignore="http://www.galasoft.ch/ignore"
+			 StartupUri="MainWindow.xaml"
+			 mc:Ignorable="d ignore">
+
+	<Application.Resources>
+		<!--Global View Model Locator-->
+		<vm:ViewModelLocator x:Key="Locator"
+							 d:IsDataSource="True" />
+		<DataTemplate DataType="{x:Type vm:ContentAddViewModel}">
+			<view:ContentAdd />
+		</DataTemplate>
+		<DataTemplate DataType="{x:Type vm:ContentListViewModel}">
+			<view:ContentList />
+		</DataTemplate>
+		<DataTemplate DataType="{x:Type vm:ContentViewViewModel}">
+			<view:ContentView />
+		</DataTemplate>
+		<DataTemplate DataType="{x:Type vm:ContentModifyViewModel}">
+			<view:ContentModify />
+		</DataTemplate>
+	</Application.Resources>
+</Application>
