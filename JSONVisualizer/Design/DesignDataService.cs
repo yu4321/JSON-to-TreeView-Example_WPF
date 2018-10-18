@@ -1,5 +1,5 @@
-﻿using System;
-using JSONVisualizer.Model;
+﻿using JSONVisualizer.Model;
+using System;
 
 namespace JSONVisualizer.Design
 {

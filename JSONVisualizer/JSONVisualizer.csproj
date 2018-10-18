@@ -55,8 +55,9 @@
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\Downloads\master\master\InterContinental\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -83,6 +84,7 @@
     </ApplicationDefinition>
     <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="GlobalContainer\GlobalJSONData.cs" />
+    <Compile Include="Messages\NewWindowMessage.cs" />
     <Compile Include="Messages\PageChangeMessage.cs" />
     <Compile Include="Model\DataItem.cs" />
     <Compile Include="Model\DataService.cs" />
@@ -94,7 +96,9 @@
     <Compile Include="ViewModel\ContentListViewModel.cs" />
     <Compile Include="ViewModel\ContentModifyViewModel.cs" />
     <Compile Include="ViewModel\ContentViewViewModel.cs" />
+    <Compile Include="ViewModel\GetURLViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\SourceViewViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Views\ContentList.xaml.cs">
       <DependentUpon>ContentList.xaml</DependentUpon>
@@ -107,6 +111,12 @@
     </Compile>
     <Compile Include="Views\ContentAdd.xaml.cs">
       <DependentUpon>ContentAdd.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GetURL.xaml.cs">
+      <DependentUpon>GetURL.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SourceView.xaml.cs">
+      <DependentUpon>SourceView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -137,6 +147,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ContentAdd.xaml">
+      <SubType>Form</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GetURL.xaml">
+      <SubType>Form</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SourceView.xaml">
       <SubType>Form</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

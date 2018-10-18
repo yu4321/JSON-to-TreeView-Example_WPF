@@ -1,14 +1,18 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Newtonsoft.Json.Linq;
-using System.Collections.ObjectModel;
-using System.Data;
-using System.Windows;
-using System.Windows.Input;
 using JSONVisualizer.GlobalContainer;
 using JSONVisualizer.Messages;
 using JSONVisualizer.Model;
+using JSONVisualizer.Views;
+using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace JSONVisualizer.ViewModel
 {
@@ -16,13 +20,47 @@ namespace JSONVisualizer.ViewModel
     {
         public ICommand AddCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
-        public ICommand ViewCommand { get; set; }
+        public ICommand SourceViewCommand { get; set; }
 
         public ICommand SelectCommand { get; set; }
 
         public ICommand FileOpenCommand { get; set; }
 
+        public ICommand URLGetCommand { get; set; }
+
         public bool canwork { get; set; }
+
+        //public bool canuseornot { get; set; }
+
+        private bool _canuseornot;
+
+        public bool canuseornot
+        {
+            get
+            {
+                return _canuseornot;
+            }
+            set
+            {
+                Set(nameof(canuseornot), ref _canuseornot, value);
+            }
+        }
+
+        private bool _urlmodeornot;
+
+        public bool urlmodeornot
+        {
+            get
+            {
+                return _urlmodeornot;
+            }
+            set
+            {
+                Set(nameof(urlmodeornot), ref _urlmodeornot, value);
+            }
+        }
+
+        //public bool urlmodeornot { get; set; }
 
         public static ObservableCollection<ElementModel> Contents { get; set; }
 
@@ -39,6 +77,20 @@ namespace JSONVisualizer.ViewModel
             set
             {
                 Set(nameof(CurrentViewModel), ref _currentViewModel, value);
+            }
+        }
+
+        private string _url;
+
+        public string URL
+        {
+            get
+            {
+                return _url;
+            }
+            set
+            {
+                Set(nameof(URL), ref _url, value);
             }
         }
 
@@ -59,14 +111,35 @@ namespace JSONVisualizer.ViewModel
             //MessageBox.Show("listview start.");
             JSONData = GlobalJSONData.data;
             canwork = false;
-            if (GlobalJSONData.filepath.Length > 3) canwork = true;
+            try
+            {
+                if (GlobalJSONData.contentJArray.ToString().Length > 3) canwork = true;
+            }
+            catch
+            {
+                try
+                {
+                    if (GlobalJSONData.contentJObject.ToString().Length > 3) canwork = true;
+                }
+                catch
+                {
+                }
+            }
 
             Contents = new ObservableCollection<ElementModel>();
             AddCommand = new RelayCommand(() => ExecuteAddCommand());
             SelectCommand = new RelayCommand<object>(ExecuteSelectCommand);
             DeleteCommand = new RelayCommand(() => ExecuteDeleteCommand());
             FileOpenCommand = new RelayCommand(() => ExecuteFileOpenCommand());
-            ViewCommand = new RelayCommand(() => ExecuteViewCommand());
+            SourceViewCommand = new RelayCommand(() => ExecuteSourceViewCommand());
+            URLGetCommand = new RelayCommand(() => ExecuteURLGetCommand());
+            urlmodeornot = true;
+            canuseornot = true;
+            if (GlobalJSONData.prevURL != null)
+            {
+                System.Console.WriteLine("prev: " + GlobalJSONData.prevURL);
+                URL = GlobalJSONData.prevURL;
+            }
             //MessageBox.Show("listview load complete");
 
             //sample data 생성
@@ -92,68 +165,7 @@ namespace JSONVisualizer.ViewModel
                     return;
                 }
             }
-            /*foreach (JObject tmp in GlobalJSONData.contentJObject.Children<JObject>())
-            {
-                System.Console.WriteLine("dddd");
-                System.Console.WriteLine(tmp.Count);
-                foreach (var x in tmp)
-                {
-                    //string name = x.Key;
-                }
-            }*/
 
-            //RecursiveTreeViewPrint(GlobalJSONData.contentJObject);
-
-            //GlobalJSONData.contentJObject.
-            /*foreach(var x in GlobalJSONData.contentJObject)
-            {
-                System.Console.WriteLine(i + "th item");
-                System.Console.WriteLine("key: " + x.Key);
-                System.Console.WriteLine("Value: " + x.Value);
-                //if(x.Value!=null)
-            }*/
-
-            /*
-            foreach(var tmp in GlobalJSONData.contentJObject.Children())
-            {
-                JObject child=JObject.Parse()
-            }
-            */
-            //JArray arr = JArray.Parse(GlobalJSONData.contentJObject.Root.ToString());
-            /*Dictionary<string, string> dictobj = GlobalJSONData.contentJObject.ToObject<Dictionary<string, string>>();
-            foreach(var tmp in dictobj)
-            {
-                System.Console.WriteLine("Key: " + tmp.Key);
-                System.Console.WriteLine("Value: " + tmp.Value);
-            }
-            */
-            /*
-            foreach (JObject tmp in arr)
-            {
-                //System.Console.WriteLine(tmp.ToString());
-                //JArray inarr = JArray.Parse(tmp.ToString());
-                RecursiveTreeViewPrint(tmp);
-            }
-            */
-            //RecursiveTreeViewPrint(GlobalJSONData.contentJObject.Children());
-
-            /* ObservableCollection<TreeData> sampleChild = new ObservableCollection<TreeData>();
-             sampleChild.Add(new TreeData() { Name = "부모1", Value = "Value" });
-             sampleChild.Add(new TreeData() { Name = "부모2", Value = "Value" });
-             sampleChild.Add(new TreeData() { Name = "부모3", Value = "Value" });
-
-             ObservableCollection<TreeData> sampleChild2 = new ObservableCollection<TreeData>();
-             sampleChild2.Add(new TreeData() { Name = "자식1", Value = "Value" });
-             sampleChild2.Add(new TreeData() { Name = "자식2", Value = "Value" });
-             sampleChild2.Add(new TreeData() { Name = "자식3", Value = "Value" });
-
-             sampleChild.Add(new TreeData() { Name = "부모4", Value = "Value", Children = sampleChild2 });
-
-             TreeData treeData = new TreeData() { Name = "루트", Children = sampleChild, Value = "Value" };
-
-             //binding할 collection에 추가하기
-
-             */
             if (GlobalJSONData.Type == 0)
                 TreeItems = MakeTreeDataChildren(GlobalJSONData.contentJObject).Children;
             else TreeItems = MakeTreeDataChildren(GlobalJSONData.contentJArray).Children;
@@ -165,7 +177,6 @@ namespace JSONVisualizer.ViewModel
             result.Name = keyname;
             if (td is JProperty)
             {
-
                 JProperty jp = (JProperty)td;
                 result.Name = jp.Name;
                 result.Children = MakeTreeDataChildren(jp).Children;
@@ -181,9 +192,8 @@ namespace JSONVisualizer.ViewModel
                 {
                     result.Value = "null";
                 }
-                
-                return result;
 
+                return result;
             }
             else if (td is JObject)
             {
@@ -200,7 +210,6 @@ namespace JSONVisualizer.ViewModel
                 int i = 0;
                 foreach (var x in ja)
                 {
-
                     result.Children.Add(MakeTreeDataChildren(x, i));
                     i++;
                 }
@@ -210,17 +219,16 @@ namespace JSONVisualizer.ViewModel
             {
                 System.Console.WriteLine("Error Type: " + td.GetType());
             }
-            
+
             return null;
         }
 
         private TreeData MakeTreeDataChildren(object td, int index)
         {
             TreeData result = new TreeData();
-            result.Name = "Element "+index;
+            result.Name = "Element " + index;
             if (td is JProperty)
             {
-
                 JProperty jp = (JProperty)td;
                 result.Name = jp.Name;
                 result.Children = MakeTreeDataChildren(jp).Children;
@@ -238,7 +246,6 @@ namespace JSONVisualizer.ViewModel
                 }
 
                 return result;
-
             }
             else if (td is JObject)
             {
@@ -255,8 +262,7 @@ namespace JSONVisualizer.ViewModel
                 int i = 0;
                 foreach (var x in ja)
                 {
-
-                    result.Children.Add(MakeTreeDataChildren(x,i));
+                    result.Children.Add(MakeTreeDataChildren(x, i));
                     i++;
                 }
                 return result;
@@ -284,7 +290,7 @@ namespace JSONVisualizer.ViewModel
             else if (td is JValue)
             {
                 JValue jv = (JValue)td;
-               
+
                 if (jv.Value != null)
                     result.Value = jv.Value.ToString();
                 else
@@ -308,7 +314,6 @@ namespace JSONVisualizer.ViewModel
                 int i = 0;
                 foreach (var x in ja)
                 {
-
                     result.Children.Add(MakeTreeDataChildren(x, i));
                     i++;
                 }
@@ -318,10 +323,8 @@ namespace JSONVisualizer.ViewModel
             {
                 System.Console.WriteLine("Error Type: " + td.GetType());
             }
-           
             return null;
         }
-
 
         private void RecursiveTreeViewPrint(JObject td)
         {
@@ -363,20 +366,50 @@ namespace JSONVisualizer.ViewModel
                         System.Console.WriteLine("PPrint>");
                         return;
                     }
-
-                    /*foreach(var y in new JObject(JObject.Parse(x.Value.ToString())))
-                    {
-                    }*/
                 }
                 i++;
             }
         }
 
-        private void ExecuteViewCommand()
+        private void ExecuteSourceViewCommand()
         {
+            System.Console.WriteLine("executed");
+            //Messenger.Default.Send(new NotificationMessage("OpenSourceView"));
+            var sourceView = new SourceView();
+            sourceView.DataContext = new SourceViewViewModel();
+            Messenger.Default.Send<NewWindowMessage>(new NewWindowMessage(Type.SourceView));
+            sourceView.Show();
         }
 
-       
+        private async void ExecuteURLGetCommand()
+        {
+            GlobalJSONData.prevURL = URL;
+            canuseornot = false;
+            string result = await GetDocumentfromURL();
+            Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.OpenURL, result));
+            canuseornot = true;
+        }
+
+        private async Task<string> GetDocumentfromURL()
+        {
+            string result = "";
+            using (var webClient = new WebClient())
+            {
+                try
+                {
+                    System.Console.WriteLine(URL);
+                    webClient.Encoding = Encoding.UTF8;
+                    var task = webClient.DownloadStringTaskAsync(URL);
+                    result = await task;
+                }
+                catch
+                {
+                    MessageBox.Show("Invalid http Address!");
+                }
+            }
+            return result;
+        }
+
         private void ExecuteAddCommand()
         {
             Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.Add, Contents));

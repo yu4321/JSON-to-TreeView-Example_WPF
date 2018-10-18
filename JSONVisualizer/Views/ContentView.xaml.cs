@@ -1,6 +1,5 @@
-﻿using System.Windows;
+﻿using JSONVisualizer.ViewModel;
 using System.Windows.Controls;
-using JSONVisualizer.ViewModel;
 
 namespace JSONVisualizer.Views
 {
@@ -16,14 +15,6 @@ namespace JSONVisualizer.Views
         {
             InitializeComponent();
             ContextMenuClosing += (s, e) => ViewModelLocator.Cleanup();
-        }
-
-        private void Back_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void Modify_Click(object sender, RoutedEventArgs e)
-        {
         }
     }
 }

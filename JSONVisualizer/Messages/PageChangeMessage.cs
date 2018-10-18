@@ -1,6 +1,6 @@
 ﻿namespace JSONVisualizer.Messages
 {
-    public enum PageName { Main, Add, View, Modify, OpenFile }
+    public enum PageName { Main, Add, View, Modify, OpenFile, OpenURL }
 
     public class PageChangeMessage
     {

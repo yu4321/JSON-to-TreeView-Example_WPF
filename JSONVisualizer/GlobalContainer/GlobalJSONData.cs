@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using JSONVisualizer.Model;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
 using System.Text;
 using System.Windows;
-using JSONVisualizer.Model;
 
 namespace JSONVisualizer.GlobalContainer
 {
@@ -13,6 +13,7 @@ namespace JSONVisualizer.GlobalContainer
         public static DataTable data;
         public static int nextindex;
         public static string filepath;
+        public static string prevURL = "";
 
         public static void FileSave()
         {

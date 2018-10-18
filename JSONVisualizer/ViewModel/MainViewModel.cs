@@ -1,17 +1,16 @@
 ﻿using CommonServiceLocator;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using JSONVisualizer.GlobalContainer;
+using JSONVisualizer.Messages;
+using JSONVisualizer.Model;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using JSONVisualizer.GlobalContainer;
-using JSONVisualizer.Messages;
-using JSONVisualizer.Model;
 
 namespace JSONVisualizer.ViewModel
 {
@@ -66,90 +65,104 @@ namespace JSONVisualizer.ViewModel
         public MainViewModel()
         {
             System.Console.WriteLine("MainWindow Start");
-            //MessageBox.Show("program start.");
             GlobalJSONData.filepath = "";
             dlg = new OpenFileDialog();
             Contents = new ObservableCollection<ElementModel>();
-            //MessageBox.Show("receivemessage registering.");
             Messenger.Default.Register<PageChangeMessage>(this, (action) => ReceiveMessage(action));
-            //MessageBox.Show("change view model.");
             CurrentViewModel = ServiceLocator.Current.GetInstance<ContentListViewModel>();
-            //MessageBox.Show("view model changed.");
         }
 
-        public void InitializeJSONTable()
+        private void ParseJSON(string importedstring)
         {
-            GlobalJSONData.data = new DataTable("JSON");
-            DataColumn indexcol = new DataColumn("Index", typeof(int));
-            DataColumn maincol = new DataColumn("Main", typeof(string));
-            DataColumn subcol = new DataColumn("Sub", typeof(string));
-            DataColumn commentcol = new DataColumn("Comment", typeof(string));
-            GlobalJSONData.data.Columns.Add(indexcol);
-            GlobalJSONData.data.Columns.Add(maincol);
-            GlobalJSONData.data.Columns.Add(subcol);
-            GlobalJSONData.data.Columns.Add(commentcol);
-            dlg.Reset();
-            dlg.DefaultExt = ".JSON";
-            dlg.Filter = "JSON files (*.JSON)|*.JSON";
-            System.Console.WriteLine("start");
-            Contents.Clear();
-            dlg.ShowDialog();
-            if (dlg.FileName.Length > 3)
+            try
+            {
+                GlobalJSONData.Type = 0;
+                JObject obj = JObject.Parse(importedstring);
+                GlobalJSONData.contentJObject = obj;
+            }
+            catch
             {
                 try
                 {
-                    GlobalJSONData.filepath = dlg.FileName;
-                    System.Console.WriteLine("File Name: " + GlobalJSONData.filepath);
+                    GlobalJSONData.Type = 1;
+                    System.Console.WriteLine("Try parse as array");
+                    JArray obj = JArray.Parse(importedstring);
+                    GlobalJSONData.contentJArray = obj;
                 }
                 catch
                 {
-                    MessageBox.Show("Please select JSON file before start.");
-                    Application.Current.Shutdown();
-                }
-                finally
-                {
-                    dlg.Reset();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please select file before start.");
-                Application.Current.Shutdown();
-            }
-
-            using (FileStream fs = new FileStream(GlobalJSONData.filepath, FileMode.OpenOrCreate))
-            {
-                StreamReader sr = new StreamReader(fs, Encoding.UTF8);
-                int index = -1;
-                while (!sr.EndOfStream)
-                {
-                    index++;
-                    string s = sr.ReadLine();
-                    string[] temp = s.Split(',');
-                    DataRow newrow = GlobalJSONData.data.NewRow();
                     try
                     {
-                        ElementModel tmp = new ElementModel();
-                        tmp.comment = temp[3];
-                        tmp.sub = temp[2];
-                        tmp.main = temp[1];
-                        Contents.Add(tmp);
-                        newrow[indexcol] = index;
-                        newrow[maincol] = tmp.main;
-                        newrow[subcol] = tmp.sub;
-                        newrow[commentcol] = tmp.comment;
-                        GlobalJSONData.data.Rows.Add(newrow);
-                        System.Console.WriteLine("작성 " + Contents[index].main);
+                        GlobalJSONData.Type = 0;
+                        System.Console.WriteLine("Try parse as object after trim");
+                        string jsonResult = importedstring;
+                        jsonResult = jsonResult.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
+                        //JArray obj = JArray.Parse(sr.ReadToEnd());
+                        JObject obj = JObject.Parse(jsonResult);
+                        GlobalJSONData.contentJObject = obj;
                     }
                     catch
                     {
-                        continue;
+                        try
+                        {
+                            GlobalJSONData.Type = 1;
+                            System.Console.WriteLine("Try parse as array after trim");
+                            string jsonResult = importedstring;
+                            jsonResult = jsonResult.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
+                            //JArray obj = JArray.Parse(sr.ReadToEnd());
+                            JArray obj = JArray.Parse(jsonResult);
+                            GlobalJSONData.contentJArray = obj;
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Please use valid json file");
+                        }
                     }
                 }
             }
         }
 
-        private void initializeJSONTreeVIew()
+        private void InitializeJSONbyFile()
+        {
+            string importedfilestring = "";
+            dlg.Reset();
+            dlg.DefaultExt = ".JSON";
+            dlg.Filter = "JSON files (*.JSON)|*.JSON";
+            System.Console.WriteLine("start");
+            Contents.Clear();
+            dlg.ShowDialog();
+            if (dlg.FileName.Length > 3)
+            {
+                try
+                {
+                    GlobalJSONData.filepath = dlg.FileName;
+                    System.Console.WriteLine("File Name: " + GlobalJSONData.filepath);
+                }
+                catch
+                {
+                    MessageBox.Show("Please select JSON file before start.");
+                    return;
+                }
+                finally
+                {
+                    dlg.Reset();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select file before start.");
+                return;
+            }
+
+            using (FileStream fs = new FileStream(GlobalJSONData.filepath, FileMode.Open))
+            {
+                StreamReader sr = new StreamReader(fs, Encoding.UTF8);
+                importedfilestring = sr.ReadToEnd();
+            }
+            ParseJSON(importedfilestring);
+        }
+
+        private void InitializeJSONTreeVIew()
         {
             dlg.Reset();
             dlg.DefaultExt = ".JSON";
@@ -167,7 +180,7 @@ namespace JSONVisualizer.ViewModel
                 catch
                 {
                     MessageBox.Show("Please select JSON file before start.");
-                    Application.Current.Shutdown();
+                    return;
                 }
                 finally
                 {
@@ -177,14 +190,13 @@ namespace JSONVisualizer.ViewModel
             else
             {
                 MessageBox.Show("Please select file before start.");
-                Application.Current.Shutdown();
+                return;
             }
 
             using (FileStream fs = new FileStream(GlobalJSONData.filepath, FileMode.OpenOrCreate))
             {
                 StreamReader sr = new StreamReader(fs, Encoding.UTF8);
                 string importedfilestring = sr.ReadToEnd();
-                //System.Console.WriteLine(importedfilestring);
 
                 try
                 {
@@ -231,13 +243,7 @@ namespace JSONVisualizer.ViewModel
                             }
                         }
                     }
-
-                    //GlobalJSONData.contentJArray = obj;
-                    //GlobalJSONData.Type = 1;
                 }
-
-                //JToken jToken = obj.Descendants();
-                //obj.
             }
         }
 
@@ -263,8 +269,12 @@ namespace JSONVisualizer.ViewModel
                     break;
 
                 case PageName.OpenFile:
-                    //InitializeJSONTable();
-                    initializeJSONTreeVIew();
+                    InitializeJSONbyFile();
+                    Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.Main));
+                    break;
+
+                case PageName.OpenURL:
+                    ParseJSON((string)action.Param);
                     Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.Main));
                     break;
             }

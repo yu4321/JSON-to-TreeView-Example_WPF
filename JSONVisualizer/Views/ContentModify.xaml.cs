@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace JSONVisualizer.Views
 {
@@ -14,18 +13,6 @@ namespace JSONVisualizer.Views
         public ContentModify()
         {
             InitializeComponent();
-        }
-
-        private void Back_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void OK_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void Modify_Click(object sender, RoutedEventArgs e)
-        {
         }
     }
 }

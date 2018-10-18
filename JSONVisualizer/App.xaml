@@ -9,21 +9,21 @@
 			 StartupUri="MainWindow.xaml"
 			 mc:Ignorable="d ignore">
 
-	<Application.Resources>
-		<!--Global View Model Locator-->
-		<vm:ViewModelLocator x:Key="Locator"
+    <Application.Resources>
+        <!--Global View Model Locator-->
+        <vm:ViewModelLocator x:Key="Locator"
 							 d:IsDataSource="True" />
-		<DataTemplate DataType="{x:Type vm:ContentAddViewModel}">
-			<view:ContentAdd />
-		</DataTemplate>
-		<DataTemplate DataType="{x:Type vm:ContentListViewModel}">
-			<view:ContentList />
-		</DataTemplate>
-		<DataTemplate DataType="{x:Type vm:ContentViewViewModel}">
-			<view:ContentView />
-		</DataTemplate>
-		<DataTemplate DataType="{x:Type vm:ContentModifyViewModel}">
-			<view:ContentModify />
-		</DataTemplate>
-	</Application.Resources>
+        <DataTemplate DataType="{x:Type vm:ContentAddViewModel}">
+            <view:ContentAdd />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ContentListViewModel}">
+            <view:ContentList />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ContentViewViewModel}">
+            <view:ContentView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ContentModifyViewModel}">
+            <view:ContentModify />
+        </DataTemplate>
+    </Application.Resources>
 </Application>

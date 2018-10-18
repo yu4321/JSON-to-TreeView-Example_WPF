@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace JSONVisualizer.Views
 {
@@ -14,27 +13,6 @@ namespace JSONVisualizer.Views
         public ContentList()
         {
             InitializeComponent();
-        }
-
-        private void Button_01_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void Button_02_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void ContentListView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-        }
-
-        private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            //DataGridRow s = sender as DataGridRow;
-            string alerter = sender.GetType().ToString();
-            string alerter2 = sender.ToString();
-            //string alerter = "index: " + s.GetIndex();
-            MessageBoxResult result = MessageBox.Show(alerter, alerter2, MessageBoxButton.OK, MessageBoxImage.Question);
         }
     }
 }

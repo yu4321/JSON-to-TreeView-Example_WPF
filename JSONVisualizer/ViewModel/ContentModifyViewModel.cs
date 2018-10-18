@@ -1,11 +1,11 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using System.Data;
-using System.Windows.Input;
 using JSONVisualizer.GlobalContainer;
 using JSONVisualizer.Messages;
 using JSONVisualizer.Model;
+using System.Data;
+using System.Windows.Input;
 
 namespace JSONVisualizer.ViewModel
 {

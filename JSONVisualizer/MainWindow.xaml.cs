@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using JSONVisualizer.ViewModel;
+﻿using JSONVisualizer.ViewModel;
+using System.Windows;
 
 namespace JSONVisualizer
 {
