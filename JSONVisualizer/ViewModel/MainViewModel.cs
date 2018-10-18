@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight.Messaging;
 using JSONVisualizer.GlobalContainer;
 using JSONVisualizer.Messages;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Text;
@@ -31,9 +32,9 @@ namespace JSONVisualizer.ViewModel
         public ICommand AddCommand { get; set; }
         public ICommand DeleteCommand { get; set; }
         public ICommand ViewCommand { get; set; }
+
         private OpenFileDialog dlg;
 
-        // public ObservableCollection<ElementModel> Contents { get; set; }
 
         private ViewModelBase _currentViewModel;
 
@@ -68,8 +69,22 @@ namespace JSONVisualizer.ViewModel
             CurrentViewModel = ServiceLocator.Current.GetInstance<ContentListViewModel>();
         }
 
+        void FixJSONString()
+        {
+            
+        }
+
         private void ParseJSON(string importedstring)
         {
+            System.Console.WriteLine("imported string length: "+importedstring.Length);
+            importedstring = importedstring.Replace("\":\"\",\"", "\":\" \",\"");
+            importedstring = importedstring.Replace("\":\"\"", "\":\"");
+            importedstring = importedstring.Replace("\"\",\"", "\",\"");
+            importedstring = importedstring.Replace("\\","\\\\");
+            importedstring = importedstring.Replace("'", "\\'");
+
+            System.Console.WriteLine("after replaced string length: " + importedstring.Length);
+            
             try
             {
                 GlobalJSONData.Type = 0;
@@ -106,11 +121,12 @@ namespace JSONVisualizer.ViewModel
                         }
                         catch
                         {
-                            MessageBox.Show("Please use valid json file");
+                            MessageBox.Show("Please use valid JSON file");
                         }
                     }
                 }
             }
+
         }
 
         private void InitializeJSONbyFile()
@@ -144,7 +160,7 @@ namespace JSONVisualizer.ViewModel
 
             using (FileStream fs = new FileStream(GlobalJSONData.filepath, FileMode.Open))
             {
-                StreamReader sr = new StreamReader(fs, Encoding.UTF8);
+                StreamReader sr = new StreamReader(fs, GlobalJSONData.nowencoding);
                 importedfilestring = sr.ReadToEnd();
             }
             ParseJSON(importedfilestring);

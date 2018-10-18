@@ -1,6 +1,7 @@
 ﻿using JSONVisualizer.Model;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
+using System.Text;
 
 namespace JSONVisualizer.GlobalContainer
 {
@@ -16,5 +17,7 @@ namespace JSONVisualizer.GlobalContainer
         public static JArray contentJArray;
 
         public static int Type = 0;
+
+        public static Encoding nowencoding = Encoding.UTF8;
     }
 }

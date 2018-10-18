@@ -19,21 +19,23 @@
         <Button Content="Get by URL" HorizontalAlignment="Right" Margin="0,33,125,0" VerticalAlignment="Top" Width="75" Command="{Binding URLGetCommand}" Grid.Column="1" IsEnabled="{Binding canuseornot}" />
         <Button Content="To Source" HorizontalAlignment="Right" Margin="0,10,42,0" VerticalAlignment="Top" Width="75" Command="{Binding SourceViewCommand}" Grid.Column="1" IsEnabled="{Binding canwork}" />
         <CheckBox Content="use URL?" Grid.Column="1" HorizontalAlignment="Left" Margin="143,38,0,0" VerticalAlignment="Top" IsChecked="{Binding urlmodeornot}" />
-        <TreeView Margin="36,58,42,19" Grid.ColumnSpan="2" ItemsSource="{Binding TreeItems}">
+        <TreeView Margin="36,58,42,39" Grid.ColumnSpan="2" ItemsSource="{Binding TreeItems}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                     <!--<TextBlock Text="{Binding Name}"+ " - " + " {Binding Value}" />-->
                     <TextBlock>
                         <TextBlock.Text>
-                            <MultiBinding StringFormat="{}{0} : {1}">
+                            <MultiBinding StringFormat="{}{0} : {1} ({2})">
                                 <Binding Path="Key" />
                                 <Binding Path="Value" />
+                                <Binding Path="Count" />
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+        <Button Content="{Binding currentencoding}" HorizontalAlignment="Right" Margin="0,320,42,0" VerticalAlignment="Top" Width="111" Command="{Binding ChangeEncodingCommand}" Grid.Column="1" />
         
         <Label Content="Loading..." Background="AntiqueWhite" HorizontalAlignment="Left" Margin="21,7,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="77" Width="485" FontSize="48" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="{Binding loadingstring}" />
         

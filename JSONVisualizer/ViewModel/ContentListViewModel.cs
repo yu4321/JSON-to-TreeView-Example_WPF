@@ -22,6 +22,9 @@ namespace JSONVisualizer.ViewModel
         public ICommand FileOpenCommand { get; set; }
 
         public ICommand URLGetCommand { get; set; }
+    
+        public ICommand ChangeEncodingCommand { get; set; }
+
 
         public bool canwork { get; set; }
 
@@ -74,6 +77,18 @@ namespace JSONVisualizer.ViewModel
             set
             {
                 Set(nameof(URL), ref _url, value);
+            }
+        }
+        private string _currentencoding;
+        public string currentencoding
+        {
+            get
+            {
+                return _currentencoding;
+            }
+            set
+            {
+                Set(nameof(currentencoding), ref _currentencoding, value);
             }
         }
 
@@ -140,6 +155,7 @@ namespace JSONVisualizer.ViewModel
             FileOpenCommand = new RelayCommand(() => ExecuteFileOpenCommand());
             SourceViewCommand = new RelayCommand(() => ExecuteSourceViewCommand());
             URLGetCommand = new RelayCommand(() => ExecuteURLGetCommand());
+            ChangeEncodingCommand = new RelayCommand(() => ExecuteChangeEncodingCommand());
             urlmodeornot = true;
             canuseornot = true;
             if (GlobalJSONData.prevURL != null)
@@ -158,19 +174,35 @@ namespace JSONVisualizer.ViewModel
                     System.Console.WriteLine("prevfilepath: " + FilePath);
                 }
             }
+            if (GlobalJSONData.nowencoding == Encoding.UTF8) currentencoding = "UTF8->EUC-KR";
+            else currentencoding = "EUC-KR->UTF-8";
 
-            
             StartTreeView();
         }
 
         private void StartTreeView()
         {
             if (GlobalJSONData.contentJObject == null && GlobalJSONData.contentJArray == null) return;
+            TreeNode root;
             if (GlobalJSONData.Type == 0)
-                TreeItems = MakeTreeDataChildren(GlobalJSONData.contentJObject).Children;
-            else TreeItems = MakeTreeDataChildren(GlobalJSONData.contentJArray).Children;
+            {
+                root = MakeTreeDataChildren(GlobalJSONData.contentJObject);
+                TreeItems = root.Children;
+                SetCountforChildrens(root);
+            }
+            else
+            {
+                root = MakeTreeDataChildren(GlobalJSONData.contentJArray);
+                TreeItems = root.Children;
+                SetCountforChildrens(root);
+            }
         }
 
+        void SetCountforChildrens(TreeNode parent)
+        {
+            parent.setCount();
+            foreach (TreeNode i in parent.Children) SetCountforChildrens(i);
+        }
         private TreeNode MakeTreeDataChildrenWork(object node, TreeNode result)
         {
             TreeItems = new ObservableCollection<TreeNode>();
@@ -283,6 +315,40 @@ namespace JSONVisualizer.ViewModel
             loadingstring = "Visible";
             GlobalJSONData.prevURL = "";
             Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.OpenFile));
+        }
+
+
+        void ExecuteChangeEncodingCommand()
+        {
+            if (GlobalJSONData.nowencoding == Encoding.UTF8)
+            {
+                GlobalJSONData.nowencoding = Encoding.GetEncoding(51949);
+            }
+            else
+            {
+                GlobalJSONData.nowencoding = Encoding.UTF8;
+            }
+            TreeItems.Clear();
+            try
+            {
+                GlobalJSONData.contentJArray.Clear();
+            }
+            catch
+            {
+
+            }
+            try
+            {
+                GlobalJSONData.contentJObject.RemoveAll();
+            }
+            catch
+            {
+
+            }
+
+            GlobalJSONData.prevURL = "";
+            GlobalJSONData.filepath = "";
+            Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.Main));
         }
     }
 }

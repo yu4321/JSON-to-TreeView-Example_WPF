@@ -7,9 +7,7 @@ namespace JSONVisualizer.Model
 
     {
         private string _Key;
-
         public string Key
-
         {
             get
             {
@@ -23,9 +21,7 @@ namespace JSONVisualizer.Model
         }
 
         private string _Value;
-
         public string Value
-
         {
             get
             {
@@ -38,8 +34,21 @@ namespace JSONVisualizer.Model
             }
         }
 
-        private ObservableCollection<TreeNode> _Children;
+        private int _Count;
+        public int Count
+        {
+            get
+            {
+                return _Count;
+            }
 
+            set
+            {
+                Set(nameof(Count), ref _Count, value);
+            }
+        }
+
+        private ObservableCollection<TreeNode> _Children;
         public ObservableCollection<TreeNode> Children
         {
             get
@@ -58,6 +67,11 @@ namespace JSONVisualizer.Model
             Key = "";
             Value = ""; 
             Children = new ObservableCollection<TreeNode>();
+        }
+
+        public void setCount()
+        {
+            Count = Children.Count;
         }
 
     }
