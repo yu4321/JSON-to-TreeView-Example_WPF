@@ -17,12 +17,11 @@
         <Button Content="File Open" HorizontalAlignment="Right" Margin="0,10,125,0" VerticalAlignment="Top" Width="75" Command="{Binding FileOpenCommand}" Grid.Column="1" />
         <TextBox HorizontalAlignment="Left" Height="23" Margin="36,32,0,0" MaxLines="1" Text="{Binding Path=URL, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Top" Width="284" Grid.ColumnSpan="2" IsEnabled="{Binding urlmodeornot, UpdateSourceTrigger=PropertyChanged}" />
         <Button Content="Get by URL" HorizontalAlignment="Right" Margin="0,33,125,0" VerticalAlignment="Top" Width="75" Command="{Binding URLGetCommand}" Grid.Column="1" IsEnabled="{Binding canuseornot}" />
-        <Button Content="To Source" HorizontalAlignment="Right" Margin="0,10,42,0" VerticalAlignment="Top" Width="75" Command="{Binding SourceViewCommand}" Grid.Column="1" IsEnabled="{Binding canwork}" />
+        <Button Content="To Source" HorizontalAlignment="Right" Margin="0,10,42,0" VerticalAlignment="Top" Width="75" Command="{Binding SourceViewCommand}" Grid.Column="1"  />
         <CheckBox Content="use URL?" Grid.Column="1" HorizontalAlignment="Left" Margin="143,38,0,0" VerticalAlignment="Top" IsChecked="{Binding urlmodeornot}" />
-        <TreeView Margin="36,58,42,39" Grid.ColumnSpan="2" ItemsSource="{Binding TreeItems}">
+        <TreeView Margin="36,58,42,39" Grid.ColumnSpan="2" ItemsSource="{Binding TreeViewItems}" >
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <!--<TextBlock Text="{Binding Name}"+ " - " + " {Binding Value}" />-->
                     <TextBlock>
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0} : {1} ({2})">

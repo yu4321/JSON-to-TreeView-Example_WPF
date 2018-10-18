@@ -118,18 +118,18 @@ namespace JSONVisualizer.ViewModel
             }
         }
 
-        private ObservableCollection<TreeNode> _TreeItems;
-        public ObservableCollection<TreeNode> TreeItems
+        private ObservableCollection<TreeNode> _TreeViewItems;
+        public ObservableCollection<TreeNode> TreeViewItems
 
         {
             get
             {
-                return _TreeItems;
+                return _TreeViewItems;
             }
 
             set
             {
-                Set(nameof(TreeItems), ref _TreeItems, value);
+                Set(nameof(TreeViewItems), ref _TreeViewItems, value);
             }
         }
 
@@ -178,6 +178,7 @@ namespace JSONVisualizer.ViewModel
             else currentencoding = "EUC-KR->UTF-8";
 
             StartTreeView();
+            
         }
 
         private void StartTreeView()
@@ -187,13 +188,13 @@ namespace JSONVisualizer.ViewModel
             if (GlobalJSONData.Type == 0)
             {
                 root = MakeTreeDataChildren(GlobalJSONData.contentJObject);
-                TreeItems = root.Children;
+                TreeViewItems = root.Children;
                 SetCountforChildrens(root);
             }
             else
             {
                 root = MakeTreeDataChildren(GlobalJSONData.contentJArray);
-                TreeItems = root.Children;
+                TreeViewItems = root.Children;
                 SetCountforChildrens(root);
             }
         }
@@ -205,7 +206,7 @@ namespace JSONVisualizer.ViewModel
         }
         private TreeNode MakeTreeDataChildrenWork(object node, TreeNode result)
         {
-            TreeItems = new ObservableCollection<TreeNode>();
+            TreeViewItems = new ObservableCollection<TreeNode>();
             if (node is JProperty)
             {
                 JProperty jp = (JProperty)node;
@@ -328,7 +329,15 @@ namespace JSONVisualizer.ViewModel
             {
                 GlobalJSONData.nowencoding = Encoding.UTF8;
             }
-            TreeItems.Clear();
+            try
+            {
+                TreeViewItems.Clear();
+
+            }
+            catch
+            {
+
+            }
             try
             {
                 GlobalJSONData.contentJArray.Clear();

@@ -10,7 +10,7 @@ namespace JSONVisualizer.GlobalContainer
         public static string filepath;
         public static string prevURL = "";
 
-        public static ObservableCollection<TreeNode> GlobalTreeItems;
+        public static ObservableCollection<TreeNode> GlobalTreeViewItems;
 
         public static JObject contentJObject;
 

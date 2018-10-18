@@ -17,7 +17,23 @@ namespace JSONVisualizer.ViewModel
         /// Initializes a new instance of the SourceViewViewModel class.
         /// </summary>
         ///
-        public string Content { get; set; }
+        public string Content
+        {
+            get {
+                try
+                {
+                    return (GlobalJSONData.Type == 0) ? GlobalJSONData.contentJObject.ToString() : GlobalJSONData.contentJArray.ToString();
+                }
+                catch
+                {
+                    return "";
+                }
+            }
+            set
+            {
+
+            }
+        }
 
         public SourceViewViewModel()
         {
@@ -26,7 +42,6 @@ namespace JSONVisualizer.ViewModel
 
         public object ReceiveMessage(NewWindowMessage action)
         {
-            Content = (GlobalJSONData.Type == 0) ? GlobalJSONData.contentJObject.ToString() : GlobalJSONData.contentJArray.ToString();
             return null;
         }
     }
