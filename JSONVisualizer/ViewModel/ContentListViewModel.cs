@@ -18,19 +18,13 @@ namespace JSONVisualizer.ViewModel
 {
     public class ContentListViewModel : ViewModelBase
     {
-        public ICommand AddCommand { get; set; }
-        public ICommand DeleteCommand { get; set; }
         public ICommand SourceViewCommand { get; set; }
-
-        public ICommand SelectCommand { get; set; }
 
         public ICommand FileOpenCommand { get; set; }
 
         public ICommand URLGetCommand { get; set; }
 
         public bool canwork { get; set; }
-
-        //public bool canuseornot { get; set; }
 
         private bool _canuseornot;
 
@@ -59,10 +53,6 @@ namespace JSONVisualizer.ViewModel
                 Set(nameof(urlmodeornot), ref _urlmodeornot, value);
             }
         }
-
-        //public bool urlmodeornot { get; set; }
-
-        public static ObservableCollection<ElementModel> Contents { get; set; }
 
         private ViewModelBase _currentViewModel;
 
@@ -94,7 +84,19 @@ namespace JSONVisualizer.ViewModel
             }
         }
 
-        public int nowindex { get; set; }
+        private string _loadingstring;
+
+        public string loadingstring
+        {
+            get
+            {
+                return _loadingstring;
+            }
+            set
+            {
+                Set(nameof(loadingstring), ref _loadingstring, value);
+            }
+        }
 
         private ObservableCollection<TreeData> _TreeItems = new ObservableCollection<TreeData>();
 
@@ -108,7 +110,6 @@ namespace JSONVisualizer.ViewModel
 
         public ContentListViewModel()
         {
-            //MessageBox.Show("listview start.");
             JSONData = GlobalJSONData.data;
             canwork = false;
             try
@@ -125,11 +126,7 @@ namespace JSONVisualizer.ViewModel
                 {
                 }
             }
-
-            Contents = new ObservableCollection<ElementModel>();
-            AddCommand = new RelayCommand(() => ExecuteAddCommand());
-            SelectCommand = new RelayCommand<object>(ExecuteSelectCommand);
-            DeleteCommand = new RelayCommand(() => ExecuteDeleteCommand());
+            loadingstring = "Hidden";
             FileOpenCommand = new RelayCommand(() => ExecuteFileOpenCommand());
             SourceViewCommand = new RelayCommand(() => ExecuteSourceViewCommand());
             URLGetCommand = new RelayCommand(() => ExecuteURLGetCommand());
@@ -140,10 +137,6 @@ namespace JSONVisualizer.ViewModel
                 System.Console.WriteLine("prev: " + GlobalJSONData.prevURL);
                 URL = GlobalJSONData.prevURL;
             }
-            //MessageBox.Show("listview load complete");
-
-            //sample data 생성
-
             StartTreeView();
         }
 
@@ -277,11 +270,9 @@ namespace JSONVisualizer.ViewModel
 
         private TreeData MakeTreeDataChildren(object td)
         {
-            //System.Console.WriteLine("invoked with " + td.GetType());
             TreeData result = new TreeData();
             if (td is JProperty)
             {
-                //System.Console.WriteLine("invoked with JProperty...");
                 JProperty jp = (JProperty)td;
                 result.Name = jp.Name;
                 result.Children = MakeTreeDataChildren(jp).Children;
@@ -326,55 +317,9 @@ namespace JSONVisualizer.ViewModel
             return null;
         }
 
-        private void RecursiveTreeViewPrint(JObject td)
-        {
-            int i = 0;
-            //System.Console.WriteLine("AllPrint: "+td.ToString()+"Allprint>");
-            //JArray inarr = JArray.Parse(td.ToString());
-            //System.Console.WriteLine(inarr.Count);
-            System.Console.WriteLine("RPrint: ");
-            foreach (var z in td) System.Console.WriteLine(z.Value.ToString() + " Now Type: " + z.Value.GetType());
-            System.Console.WriteLine("RPrint>");
-            //System.Console.WriteLine(td.ToString());
-            foreach (var x in td)
-            {
-                //System.Console.WriteLine(i + "th item");
-                //System.Console.WriteLine("key: " + x.Key);
-                //System.Console.WriteLine("Value: " + x.Value);
-                if (x.Value != null)
-                {
-                    try
-                    {
-                        //System.Console.WriteLine(x.Value.ToString());
-                        foreach (JObject y in x.Value.Children())
-                        {
-                            //System.Console.WriteLine(y.Count);
-                            //System.Console.WriteLine(y.ToString());
-                            RecursiveTreeViewPrint(y);
-                            //System.Console.WriteLine(y.GetType());
-                        }
-                    }
-                    catch
-                    {
-                        //System.Console.WriteLine("Cannot JObject Cast - "+x.Value);
-                        System.Console.WriteLine("PPrint: ");
-                        foreach (JProperty y in x.Value.Children())
-                        {
-                            System.Console.WriteLine(y.ToString() + " Now Type: " + y.Value.GetType());
-                            //System.Console.WriteLine(y.GetType());
-                        }
-                        System.Console.WriteLine("PPrint>");
-                        return;
-                    }
-                }
-                i++;
-            }
-        }
-
         private void ExecuteSourceViewCommand()
         {
             System.Console.WriteLine("executed");
-            //Messenger.Default.Send(new NotificationMessage("OpenSourceView"));
             var sourceView = new SourceView();
             sourceView.DataContext = new SourceViewViewModel();
             Messenger.Default.Send<NewWindowMessage>(new NewWindowMessage(Type.SourceView));
@@ -385,6 +330,7 @@ namespace JSONVisualizer.ViewModel
         {
             GlobalJSONData.prevURL = URL;
             canuseornot = false;
+            loadingstring = "Visible";
             string result = await GetDocumentfromURL();
             Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.OpenURL, result));
             canuseornot = true;
@@ -410,46 +356,9 @@ namespace JSONVisualizer.ViewModel
             return result;
         }
 
-        private void ExecuteAddCommand()
-        {
-            Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.Add, Contents));
-        }
-
-        private void ExecuteSelectCommand()
-        {
-            MessageBoxResult result = MessageBox.Show("ddd", "111", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
-            {
-                Application.Current.Shutdown();
-            }
-        }
-
-        private void ExecuteSelectCommand(object param)
-        {
-            try
-            {
-                DataRowView drv = param as DataRowView;
-                GlobalJSONData.nextindex = (int)drv[0];
-                Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.View));
-            }
-            catch
-            {
-            }
-        }
-
-        private void ExecuteDeleteCommand()
-        {
-            try
-            {
-                GlobalJSONData.DeleteRow(nowindex);
-            }
-            catch
-            {
-            }
-        }
-
         private void ExecuteFileOpenCommand()
         {
+            loadingstring = "Visible";
             Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.OpenFile));
         }
     }

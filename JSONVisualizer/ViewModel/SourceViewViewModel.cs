@@ -27,14 +27,8 @@ namespace JSONVisualizer.ViewModel
 
         public object ReceiveMessage(NewWindowMessage action)
         {
-            //Content=GlobalJSONData.
-            /*if (GlobalJSONData.Type == 0) Content = GlobalJSONData.contentJObject.ToString();
-            else Content = GlobalJSONData.contentJArray.ToString();*/
             System.Console.WriteLine("received");
             Content = (GlobalJSONData.Type == 0) ? GlobalJSONData.contentJObject.ToString() : GlobalJSONData.contentJArray.ToString();
-            //Messenger.Default.Send(new NotificationMessage("OpenSourceView"));
-
-            /*Messenger.Default.Send(new NewWindowMessage(Type.SourceView));*/
             return null;
         }
     }

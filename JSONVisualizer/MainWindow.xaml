@@ -7,15 +7,6 @@
         mc:Ignorable="d ignore"
         Title="JSON Visualizer" Height="450" Width="625"
         DataContext="{Binding Main, Source={StaticResource Locator}}">
-
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Skins/MainSkin.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
-
     <Grid>
         <ContentControl Content="{Binding CurrentViewModel}"></ContentControl>
     </Grid>

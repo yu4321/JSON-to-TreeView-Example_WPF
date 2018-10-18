@@ -34,5 +34,6 @@
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
+        <Label Content="Loading..." Background="AntiqueWhite" HorizontalAlignment="Left" Margin="21,7,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="77" Width="485" FontSize="48" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Visibility="{Binding loadingstring}" />
     </Grid>
 </UserControl>

@@ -82,38 +82,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="GlobalContainer\GlobalJSONData.cs" />
     <Compile Include="Messages\NewWindowMessage.cs" />
     <Compile Include="Messages\PageChangeMessage.cs" />
-    <Compile Include="Model\DataItem.cs" />
-    <Compile Include="Model\DataService.cs" />
-    <Compile Include="Model\IDataService.cs" />
-    <Compile Include="Model\ElementModel.cs" />
     <Compile Include="Model\TreeData.cs" />
-    <Compile Include="ViewModel\ContentAddViewModel.cs" />
-    <Compile Include="ViewModel\ContentDeleteViewModel.cs" />
     <Compile Include="ViewModel\ContentListViewModel.cs" />
-    <Compile Include="ViewModel\ContentModifyViewModel.cs" />
-    <Compile Include="ViewModel\ContentViewViewModel.cs" />
-    <Compile Include="ViewModel\GetURLViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SourceViewViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Views\ContentList.xaml.cs">
       <DependentUpon>ContentList.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ContentView.xaml.cs">
-      <DependentUpon>ContentView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ContentModify.xaml.cs">
-      <DependentUpon>ContentModify.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ContentAdd.xaml.cs">
-      <DependentUpon>ContentAdd.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\GetURL.xaml.cs">
-      <DependentUpon>GetURL.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SourceView.xaml.cs">
       <DependentUpon>SourceView.xaml</DependentUpon>
@@ -130,29 +108,9 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Skins\MainSkin.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\ContentList.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ContentView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ContentModify.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ContentAdd.xaml">
-      <SubType>Form</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\GetURL.xaml">
-      <SubType>Form</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SourceView.xaml">
       <SubType>Form</SubType>

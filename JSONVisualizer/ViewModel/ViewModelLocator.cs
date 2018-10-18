@@ -27,10 +27,6 @@ namespace JSONVisualizer.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
             SimpleIoc.Default.Register<MainViewModel>();
-            SimpleIoc.Default.Register<ContentAddViewModel>();
-            SimpleIoc.Default.Register<ContentDeleteViewModel>();
-            SimpleIoc.Default.Register<ContentModifyViewModel>();
-            SimpleIoc.Default.Register<ContentViewViewModel>();
             SimpleIoc.Default.Register<SourceViewViewModel>();
             SimpleIoc.Default.Register<ContentListViewModel>();
         }
@@ -56,17 +52,9 @@ namespace JSONVisualizer.ViewModel
         {
             System.Console.WriteLine("Cleanup invoked");
             SimpleIoc.Default.Unregister<MainViewModel>();
-            SimpleIoc.Default.Unregister<ContentAddViewModel>();
-            SimpleIoc.Default.Unregister<ContentDeleteViewModel>();
-            SimpleIoc.Default.Unregister<ContentModifyViewModel>();
-            SimpleIoc.Default.Unregister<ContentViewViewModel>();
             SimpleIoc.Default.Unregister<ContentListViewModel>();
             SimpleIoc.Default.Unregister<SourceViewViewModel>();
             SimpleIoc.Default.Register<MainViewModel>();
-            SimpleIoc.Default.Register<ContentAddViewModel>();
-            SimpleIoc.Default.Register<ContentDeleteViewModel>();
-            SimpleIoc.Default.Register<ContentModifyViewModel>();
-            SimpleIoc.Default.Register<ContentViewViewModel>();
             SimpleIoc.Default.Register<ContentListViewModel>();
             SimpleIoc.Default.Register<SourceViewViewModel>();
         }
