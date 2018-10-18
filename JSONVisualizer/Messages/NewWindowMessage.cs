@@ -4,11 +4,5 @@
 
     public class NewWindowMessage
     {
-        public Type Type { get; set; }
-
-        public NewWindowMessage(Type type)
-        {
-            Type = type;
-        }
     }
 }

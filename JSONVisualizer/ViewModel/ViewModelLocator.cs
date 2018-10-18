@@ -50,7 +50,6 @@ namespace JSONVisualizer.ViewModel
         /// </summary>
         public static void Cleanup()
         {
-            System.Console.WriteLine("Cleanup invoked");
             SimpleIoc.Default.Unregister<MainViewModel>();
             SimpleIoc.Default.Unregister<ContentListViewModel>();
             SimpleIoc.Default.Unregister<SourceViewViewModel>();

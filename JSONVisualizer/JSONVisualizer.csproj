@@ -85,7 +85,7 @@
     <Compile Include="GlobalContainer\GlobalJSONData.cs" />
     <Compile Include="Messages\NewWindowMessage.cs" />
     <Compile Include="Messages\PageChangeMessage.cs" />
-    <Compile Include="Model\TreeData.cs" />
+    <Compile Include="Model\TreeNode.cs" />
     <Compile Include="ViewModel\ContentListViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\SourceViewViewModel.cs" />

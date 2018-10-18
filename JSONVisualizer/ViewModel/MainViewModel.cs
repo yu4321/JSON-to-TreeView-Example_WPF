@@ -62,7 +62,6 @@ namespace JSONVisualizer.ViewModel
 
         public MainViewModel()
         {
-            System.Console.WriteLine("MainWindow Start");
             GlobalJSONData.filepath = "";
             dlg = new OpenFileDialog();
             Messenger.Default.Register<PageChangeMessage>(this, (action) => ReceiveMessage(action));
@@ -82,7 +81,6 @@ namespace JSONVisualizer.ViewModel
                 try
                 {
                     GlobalJSONData.Type = 1;
-                    System.Console.WriteLine("Try parse as array");
                     JArray obj = JArray.Parse(importedstring);
                     GlobalJSONData.contentJArray = obj;
                 }
@@ -91,7 +89,6 @@ namespace JSONVisualizer.ViewModel
                     try
                     {
                         GlobalJSONData.Type = 0;
-                        System.Console.WriteLine("Try parse as object after trim");
                         string jsonResult = importedstring;
                         jsonResult = jsonResult.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
                         JObject obj = JObject.Parse(jsonResult);
@@ -102,7 +99,6 @@ namespace JSONVisualizer.ViewModel
                         try
                         {
                             GlobalJSONData.Type = 1;
-                            System.Console.WriteLine("Try parse as array after trim");
                             string jsonResult = importedstring;
                             jsonResult = jsonResult.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
                             JArray obj = JArray.Parse(jsonResult);
@@ -123,14 +119,12 @@ namespace JSONVisualizer.ViewModel
             dlg.Reset();
             dlg.DefaultExt = ".JSON";
             dlg.Filter = "JSON files (*.JSON)|*.JSON";
-            System.Console.WriteLine("start");
             dlg.ShowDialog();
             if (dlg.FileName.Length > 3)
             {
                 try
                 {
                     GlobalJSONData.filepath = dlg.FileName;
-                    System.Console.WriteLine("File Name: " + GlobalJSONData.filepath);
                 }
                 catch
                 {

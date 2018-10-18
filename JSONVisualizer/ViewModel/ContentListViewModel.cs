@@ -7,7 +7,6 @@ using JSONVisualizer.Model;
 using JSONVisualizer.Views;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,7 +26,6 @@ namespace JSONVisualizer.ViewModel
         public bool canwork { get; set; }
 
         private bool _canuseornot;
-
         public bool canuseornot
         {
             get
@@ -41,7 +39,6 @@ namespace JSONVisualizer.ViewModel
         }
 
         private bool _urlmodeornot;
-
         public bool urlmodeornot
         {
             get
@@ -55,9 +52,6 @@ namespace JSONVisualizer.ViewModel
         }
 
         private ViewModelBase _currentViewModel;
-
-        public static DataTable JSONData { get; set; }
-
         public ViewModelBase CurrentViewModel
         {
             get
@@ -71,7 +65,6 @@ namespace JSONVisualizer.ViewModel
         }
 
         private string _url;
-
         public string URL
         {
             get
@@ -84,8 +77,20 @@ namespace JSONVisualizer.ViewModel
             }
         }
 
-        private string _loadingstring;
+        private string _FilePath;
+        public string FilePath
+        {
+            get
+            {
+                return _FilePath;
+            }
+            set
+            {
+                Set(nameof(FilePath), ref _FilePath, value);
+            }
+        }
 
+        private string _loadingstring;
         public string loadingstring
         {
             get
@@ -98,19 +103,24 @@ namespace JSONVisualizer.ViewModel
             }
         }
 
-        private ObservableCollection<TreeData> _TreeItems = new ObservableCollection<TreeData>();
-
-        public ObservableCollection<TreeData> TreeItems
+        private ObservableCollection<TreeNode> _TreeItems;
+        public ObservableCollection<TreeNode> TreeItems
 
         {
-            get { return _TreeItems; }
+            get
+            {
+                return _TreeItems;
+            }
 
-            set { _TreeItems = value; RaisePropertyChanged("TreeItems"); }
+            set
+            {
+                Set(nameof(TreeItems), ref _TreeItems, value);
+            }
         }
 
         public ContentListViewModel()
         {
-            JSONData = GlobalJSONData.data;
+            FilePath = "";
             canwork = false;
             try
             {
@@ -134,50 +144,46 @@ namespace JSONVisualizer.ViewModel
             canuseornot = true;
             if (GlobalJSONData.prevURL != null)
             {
-                System.Console.WriteLine("prev: " + GlobalJSONData.prevURL);
-                URL = GlobalJSONData.prevURL;
+                if (GlobalJSONData.prevURL.Length > 5)
+                {
+                    URL = GlobalJSONData.prevURL;
+                    System.Console.WriteLine("prevurl: " + URL);
+                }
             }
+            if (GlobalJSONData.filepath != null)
+            {
+                if (GlobalJSONData.filepath.Length > 3)
+                {
+                    FilePath = GlobalJSONData.filepath;
+                    System.Console.WriteLine("prevfilepath: " + FilePath);
+                }
+            }
+
+            
             StartTreeView();
         }
 
         private void StartTreeView()
         {
-            try
-            {
-                System.Console.WriteLine("JObject Count: " + GlobalJSONData.contentJObject.Count);
-            }
-            catch
-            {
-                try
-                {
-                    System.Console.WriteLine("JArray Count: " + GlobalJSONData.contentJArray.Count);
-                }
-                catch
-                {
-                    System.Console.WriteLine("파일없음");
-                    return;
-                }
-            }
-
+            if (GlobalJSONData.contentJObject == null && GlobalJSONData.contentJArray == null) return;
             if (GlobalJSONData.Type == 0)
                 TreeItems = MakeTreeDataChildren(GlobalJSONData.contentJObject).Children;
             else TreeItems = MakeTreeDataChildren(GlobalJSONData.contentJArray).Children;
         }
 
-        private TreeData MakeTreeDataChildren(object td, string keyname)
+        private TreeNode MakeTreeDataChildrenWork(object node, TreeNode result)
         {
-            TreeData result = new TreeData();
-            result.Name = keyname;
-            if (td is JProperty)
+            TreeItems = new ObservableCollection<TreeNode>();
+            if (node is JProperty)
             {
-                JProperty jp = (JProperty)td;
-                result.Name = jp.Name;
+                JProperty jp = (JProperty)node;
+                result.Key = jp.Name;
                 result.Children = MakeTreeDataChildren(jp).Children;
                 return result;
             }
-            else if (td is JValue)
+            else if (node is JValue)
             {
-                JValue jv = (JValue)td;
+                JValue jv = (JValue)node;
 
                 if (jv.Value != null)
                     result.Value = jv.Value.ToString();
@@ -188,18 +194,18 @@ namespace JSONVisualizer.ViewModel
 
                 return result;
             }
-            else if (td is JObject)
+            else if (node is JObject)
             {
-                JObject jo = (JObject)td;
+                JObject jo = (JObject)node;
                 foreach (var x in jo)
                 {
                     result.Children.Add(MakeTreeDataChildren(x.Value, x.Key));
                 }
                 return result;
             }
-            else if (td is JArray)
+            else if (node is JArray)
             {
-                JArray ja = (JArray)td;
+                JArray ja = (JArray)node;
                 int i = 0;
                 foreach (var x in ja)
                 {
@@ -210,125 +216,42 @@ namespace JSONVisualizer.ViewModel
             }
             else
             {
-                System.Console.WriteLine("Error Type: " + td.GetType());
+                return null;
             }
-
-            return null;
         }
 
-        private TreeData MakeTreeDataChildren(object td, int index)
+        private TreeNode MakeTreeDataChildren(object node, string keyname)
         {
-            TreeData result = new TreeData();
-            result.Name = "Element " + index;
-            if (td is JProperty)
-            {
-                JProperty jp = (JProperty)td;
-                result.Name = jp.Name;
-                result.Children = MakeTreeDataChildren(jp).Children;
-                return result;
-            }
-            else if (td is JValue)
-            {
-                JValue jv = (JValue)td;
-
-                if (jv.Value != null)
-                    result.Value = jv.Value.ToString();
-                else
-                {
-                    result.Value = "null";
-                }
-
-                return result;
-            }
-            else if (td is JObject)
-            {
-                JObject jo = (JObject)td;
-                foreach (var x in jo)
-                {
-                    result.Children.Add(MakeTreeDataChildren(x.Value, x.Key));
-                }
-                return result;
-            }
-            else if (td is JArray)
-            {
-                JArray ja = (JArray)td;
-                int i = 0;
-                foreach (var x in ja)
-                {
-                    result.Children.Add(MakeTreeDataChildren(x, i));
-                    i++;
-                }
-                return result;
-            }
-            else
-            {
-                System.Console.WriteLine("Error Type: " + td.GetType());
-            }
-
-            return null;
+            TreeNode result = new TreeNode();
+            result.Key = keyname;
+            return MakeTreeDataChildrenWork(node, result);
         }
 
-        private TreeData MakeTreeDataChildren(object td)
+        private TreeNode MakeTreeDataChildren(object node, int index)
         {
-            TreeData result = new TreeData();
-            if (td is JProperty)
-            {
-                JProperty jp = (JProperty)td;
-                result.Name = jp.Name;
-                result.Children = MakeTreeDataChildren(jp).Children;
-                return result;
-            }
-            else if (td is JValue)
-            {
-                JValue jv = (JValue)td;
+            TreeNode result = new TreeNode();
+            result.Key = "Element " + index;
+            return MakeTreeDataChildrenWork(node, result);
+        }
 
-                if (jv.Value != null)
-                    result.Value = jv.Value.ToString();
-                else
-                {
-                    result.Value = "null";
-                }
-                return result;
-            }
-            else if (td is JObject)
-            {
-                JObject jo = (JObject)td;
-                foreach (var x in jo)
-                {
-                    result.Children.Add(MakeTreeDataChildren(x.Value, x.Key));
-                }
-                return result;
-            }
-            else if (td is JArray)
-            {
-                JArray ja = (JArray)td;
-                int i = 0;
-                foreach (var x in ja)
-                {
-                    result.Children.Add(MakeTreeDataChildren(x, i));
-                    i++;
-                }
-                return result;
-            }
-            else
-            {
-                System.Console.WriteLine("Error Type: " + td.GetType());
-            }
-            return null;
+        private TreeNode MakeTreeDataChildren(object node)
+        {
+            TreeNode result = new TreeNode();
+            return MakeTreeDataChildrenWork(node, result);
         }
 
         private void ExecuteSourceViewCommand()
         {
-            System.Console.WriteLine("executed");
             var sourceView = new SourceView();
             sourceView.DataContext = new SourceViewViewModel();
-            Messenger.Default.Send<NewWindowMessage>(new NewWindowMessage(Type.SourceView));
+            Messenger.Default.Send<NewWindowMessage>(new NewWindowMessage());
             sourceView.Show();
         }
 
         private async void ExecuteURLGetCommand()
         {
             GlobalJSONData.prevURL = URL;
+            GlobalJSONData.filepath = "";
             canuseornot = false;
             loadingstring = "Visible";
             string result = await GetDocumentfromURL();
@@ -343,14 +266,13 @@ namespace JSONVisualizer.ViewModel
             {
                 try
                 {
-                    System.Console.WriteLine(URL);
                     webClient.Encoding = Encoding.UTF8;
                     var task = webClient.DownloadStringTaskAsync(URL);
                     result = await task;
                 }
                 catch
                 {
-                    MessageBox.Show("Invalid http Address!");
+                    MessageBox.Show("Invalid HTTP Address!");
                 }
             }
             return result;
@@ -359,6 +281,7 @@ namespace JSONVisualizer.ViewModel
         private void ExecuteFileOpenCommand()
         {
             loadingstring = "Visible";
+            GlobalJSONData.prevURL = "";
             Messenger.Default.Send<PageChangeMessage>(new PageChangeMessage(PageName.OpenFile));
         }
     }

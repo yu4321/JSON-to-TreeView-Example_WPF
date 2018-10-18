@@ -22,12 +22,10 @@ namespace JSONVisualizer.ViewModel
         public SourceViewViewModel()
         {
             Messenger.Default.Register<NewWindowMessage>(this, (action) => ReceiveMessage(action));
-            System.Console.WriteLine("started");
         }
 
         public object ReceiveMessage(NewWindowMessage action)
         {
-            System.Console.WriteLine("received");
             Content = (GlobalJSONData.Type == 0) ? GlobalJSONData.contentJObject.ToString() : GlobalJSONData.contentJArray.ToString();
             return null;
         }
