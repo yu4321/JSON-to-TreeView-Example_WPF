@@ -76,15 +76,6 @@ namespace JSONVisualizer.ViewModel
 
         private void ParseJSON(string importedstring)
         {
-            System.Console.WriteLine("imported string length: "+importedstring.Length);
-            importedstring = importedstring.Replace("\":\"\",\"", "\":\" \",\"");
-            importedstring = importedstring.Replace("\":\"\"", "\":\"");
-            importedstring = importedstring.Replace("\"\",\"", "\",\"");
-            importedstring = importedstring.Replace("\\","\\\\");
-            importedstring = importedstring.Replace("'", "\\'");
-
-            System.Console.WriteLine("after replaced string length: " + importedstring.Length);
-            
             try
             {
                 GlobalJSONData.Type = 0;
@@ -104,8 +95,12 @@ namespace JSONVisualizer.ViewModel
                     try
                     {
                         GlobalJSONData.Type = 0;
+                        importedstring = importedstring.Replace("\":\"\",\"", "\":\" \",\"");
+                        importedstring = importedstring.Replace("\":\"\"", "\":\"");
+                        importedstring = importedstring.Replace("\"\",\"", "\",\"");
+                        importedstring = importedstring.Replace("\\", "\\\\");
+                        importedstring = importedstring.Replace("'", "\\'");
                         string jsonResult = importedstring;
-                        jsonResult = jsonResult.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
                         JObject obj = JObject.Parse(jsonResult);
                         GlobalJSONData.contentJObject = obj;
                     }
@@ -114,14 +109,38 @@ namespace JSONVisualizer.ViewModel
                         try
                         {
                             GlobalJSONData.Type = 1;
+                            importedstring = importedstring.Replace("\":\"\",\"", "\":\" \",\"");
+                            importedstring = importedstring.Replace("\":\"\"", "\":\"");
+                            importedstring = importedstring.Replace("\"\",\"", "\",\"");
+                            importedstring = importedstring.Replace("\\", "\\\\");
+                            importedstring = importedstring.Replace("'", "\\'");
                             string jsonResult = importedstring;
-                            jsonResult = jsonResult.TrimStart(new char[] { '[' }).TrimEnd(new char[] { ']' });
                             JArray obj = JArray.Parse(jsonResult);
                             GlobalJSONData.contentJArray = obj;
                         }
                         catch
                         {
                             MessageBox.Show("Please use valid JSON file");
+                            GlobalJSONData.filepath = "";
+                            GlobalJSONData.prevURL = "";
+                            try
+                            {
+                                GlobalJSONData.contentJArray.Clear();
+                            }
+                            catch
+                            {
+
+                            }
+                            try
+                            {
+                                GlobalJSONData.contentJObject.RemoveAll();
+                            }
+                            catch
+                            {
+
+                            }
+
+
                         }
                     }
                 }

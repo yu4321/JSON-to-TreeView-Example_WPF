@@ -187,12 +187,14 @@ namespace JSONVisualizer.ViewModel
             TreeNode root;
             if (GlobalJSONData.Type == 0)
             {
+                if (GlobalJSONData.contentJObject == null) return;
                 root = MakeTreeDataChildren(GlobalJSONData.contentJObject);
                 TreeViewItems = root.Children;
                 SetCountforChildrens(root);
             }
             else
             {
+                if (GlobalJSONData.contentJArray == null) return;
                 root = MakeTreeDataChildren(GlobalJSONData.contentJArray);
                 TreeViewItems = root.Children;
                 SetCountforChildrens(root);
